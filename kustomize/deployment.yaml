@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vankay-service
+  namespace: pre-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vankay-service
+  template:
+    metadata:
+      labels:
+        app: vankay-service
+    spec:
+      containers:
+        - name: vankay-service
+          image: 645708657292.dkr.ecr.ap-south-1.amazonaws.com/vankay:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: deployment-secret
