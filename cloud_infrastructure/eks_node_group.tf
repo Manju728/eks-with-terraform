@@ -95,9 +95,9 @@ resource "aws_eks_node_group" "eks_node_group" {
     version = aws_launch_template.eks_ng_lt.latest_version
   }
   scaling_config {
-    desired_size = 2
-    max_size     = 2
-    min_size     = 2
+    desired_size = 1
+    max_size     = 1
+    min_size     = 1
   }
 
   depends_on = [
