@@ -19,9 +19,9 @@ terraform workspace select -or-create test
 
 ###### Apply changes
 ```commandline
-terrafrom apply -auto-approve
+terraform apply -auto-approve
 ```
 ###### Destroy changes
 ```commandline
-terrafrom destroy -auto-approve
+terraform destroy -auto-approve
 ```
