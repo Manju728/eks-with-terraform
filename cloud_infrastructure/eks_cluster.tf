@@ -29,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "eks_vpc_policy_attachment" {
 
 resource "aws_eks_cluster" "eks_cluster" {
   name     = "eks-cluster"
-  version  = "1.30"
+  version  = "1.31"
   role_arn = aws_iam_role.eks_cluster_role.arn
 
   access_config {
@@ -78,4 +78,21 @@ resource "aws_vpc_security_group_ingress_rule" "eks_sg_ingress_rule" {
   from_port                    = -1
   ip_protocol                  = "-1"
   to_port                      = -1
+}
+
+resource "aws_eks_access_entry" "cluster_access" {
+  for_each      = { for ard in local.user_arns : ard => ard }
+  cluster_name  = aws_eks_cluster.eks_cluster.name
+  principal_arn = each.key
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "group_access" {
+  for_each      = { for ard in local.user_arns : ard => ard }
+  cluster_name  = aws_eks_cluster.eks_cluster.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = aws_eks_access_entry.cluster_access[each.key].principal_arn
+  access_scope {
+    type = "cluster"
+  }
 }

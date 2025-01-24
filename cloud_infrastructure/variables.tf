@@ -67,3 +67,26 @@ variable "node_group_instance_type" {
   type        = string
   description = "Instance type for the EKS node group"
 }
+
+variable "eks_cluster_permissions" {
+  type        = list(object({ principal_arn = string, permission_ploicy_arn = string }))
+  description = "List of permissions for the EKS cluster"
+  default = [
+    {
+      principal_arn = "arn:aws:iam::645708657292:user/Admin",
+      permission_ploicy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+    },
+    {
+      principal_arn = "arn:aws:iam::645708657292:user/Manju",
+      permission_ploicy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+    },
+    {
+      principal_arn = "arn:aws:iam::645708657292:user/Akhila",
+      permission_ploicy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+    },
+    {
+      principal_arn = "arn:aws:iam::645708657292:user/Naresh",
+      permission_ploicy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+    }
+  ]
+}
