@@ -87,9 +87,6 @@ resource "aws_eks_node_group" "eks_node_group" {
   node_group_name = "eks-node-group"
   node_role_arn   = aws_iam_role.eks_node_role.arn
   subnet_ids      = local.private_subnet_ids
-  # instance_types  = [var.node_group_instance_type]
-  # disk_size       = 20
-  # ami_type        = "AL2_x86_64"
   launch_template {
     id      = aws_launch_template.eks_ng_lt.id
     version = aws_launch_template.eks_ng_lt.latest_version
@@ -118,4 +115,34 @@ resource "aws_eks_node_group" "eks_node_group" {
     "alpha.eksctl.io/cluster-name"   = aws_eks_cluster.eks_cluster.name
     "alpha.eksctl.io/nodegroup-name" = "eks-node-group"
   }
+}
+
+data "aws_iam_policy_document" "aws_access" {
+  statement {
+    sid    = "EKSCreateVolumeAccess"
+    effect = "Allow"
+    actions = [
+      "ec2:CreateVolume",
+      "ec2:DeleteVolume",
+      "ec2:AttachVolume",
+      "ec2:DetachVolume",
+      "ec2:ModifyVolume",
+      "ec2:DescribeAvailabilityZones",
+      "ec2:DescribeInstances",
+      "ec2:DescribeSnapshots",
+      "ec2:DescribeTags",
+      "ec2:DescribeVolumes",
+      "ec2:DescribeVolumeAttribute",
+      "ec2:DescribeVolumeModifications",
+      "ec2:CreateTags",
+      "ec2:DeleteTags"
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_role_policy" "eks_node_aws_access_policy_attach" {
+  name   = "eks-access-to-aws-resources-policy"
+  role   = aws_iam_role.eks_node_role.id
+  policy = data.aws_iam_policy_document.aws_access.json
 }

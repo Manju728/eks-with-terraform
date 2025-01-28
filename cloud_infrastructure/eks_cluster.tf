@@ -80,6 +80,12 @@ resource "aws_vpc_security_group_ingress_rule" "eks_sg_ingress_rule" {
   to_port                      = -1
 }
 
+resource "aws_eks_addon" "aws_ebs_csi_driver" {
+  cluster_name = aws_eks_cluster.eks_cluster.name
+  addon_name   = "aws-ebs-csi-driver"
+  depends_on   = [aws_eks_node_group.eks_node_group]
+}
+
 resource "aws_eks_access_entry" "cluster_access" {
   for_each      = { for ard in local.user_arns : ard => ard }
   cluster_name  = aws_eks_cluster.eks_cluster.name
